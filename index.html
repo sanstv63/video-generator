@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free AI Video Generator</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:20px; }
+    .container { max-width:800px; margin:auto; background:white; padding:20px; border-radius:10px; box-shadow:0 0 10px rgba(0,0,0,0.1); }
+    h1 { text-align:center; }
+    textarea, select, input { width:100%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; }
+    button { background:#0066ff; color:white; padding:12px 20px; border:none; border-radius:5px; cursor:pointer; }
+    button:hover { background:#004bcc; }
+    .output { margin-top:20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Free AI Video Generator (5 Minutes)</h1>
+    <p>Enter your script, select language, and generate a video up to 5 minutes.</p>
+
+    <label>Enter Script:</label>
+    <textarea id="script" rows="6" placeholder="Write your video script here..."></textarea>
+
+    <label>Select Language:</label>
+    <select id="language">
+      <option value="en">English</option>
+      <option value="ur">Urdu</option>
+      <option value="ar">Arabic</option>
+      <option value="hi">Hindi</option>
+      <option value="tr">Turkish</option>
+      <option value="zh">Chinese</option>
+    </select>
+
+    <button onclick="generateVideo()">Generate Video</button>
+
+    <div class="output" id="output"></div>
+  </div>
+
+<script>
+async function generateVideo() {
+  const script = document.getElementById('script').value.trim();
+  const lang = document.getElementById('language').value;
+  const out = document.getElementById('output');
+
+  if (!script) {
+    out.innerHTML = '<p style="color:red">Please enter a script!</p>';
+    return;
+  }
+
+  out.innerHTML = '<p>Generating video... Please wait 30-60 seconds...</p>';
+
+  // This uses a placeholder API endpoint — replace with your real API
+  const response = await fetch('https://api.your-video-ai.com/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text: script, language: lang, duration: 300 })
+  });
+
+  const data = await response.json();
+
+  if (data.video_url) {
+    out.innerHTML = `
+      <h3>Your Video is Ready:</h3>
+      <video width="100%" controls src="${data.video_url}"></video>
+      <br/><br/>
+      <a href="${data.video_url}" download>
+        <button>Download Video</button>
+      </a>
+    `;
+  } else {
+    out.innerHTML = '<p style="color:red">Error generating video.</p>';
+  }
+}
+</script>
+</body>
+</html>
